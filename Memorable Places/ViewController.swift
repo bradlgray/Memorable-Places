@@ -8,7 +8,7 @@
 
 import UIKit
 import MapKit
-import CoreLocation
+
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -22,8 +22,27 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         manager = CLLocationManager()
         manager.delegate = self
         manager.desiredAccuracy - kCLLocationAccuracyBest
+        
+        if activePlace == -1 {
+            
+       
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+        } else {
+            let latitude = NSString(string: places[activePlace]["lat"]!).doubleValue
+            let longitude = NSString(string: places[activePlace]["long"]!).doubleValue
+            var coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+            var latDelta: CLLocationDegrees = 0.01
+            var lonDelta: CLLocationDegrees = 0.01
+            var span: MKCoordinateSpan = MKCoordinateSpanMake(latDelta, lonDelta)
+            var region: MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
+            self.MapViewKit.setRegion(region, animated: true)
+            var annontation = MKPointAnnotation()
+            annontation.coordinate = coordinate
+            annontation.title = places[activePlace]["name"]
+            self.MapViewKit.addAnnotation(annontation)
+
+        }
         
         var uilpgr = UILongPressGestureRecognizer(target: self, action: "action:")
         uilpgr.minimumPressDuration = 1.0
@@ -58,9 +77,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 }
                 
                 if title == "" {
-                    title = "Added \(NSData())"
+                    title = "Added \(NSDate())"
                 }
-                places.append(["name":title, "lat":"\(newCoordinate.latitude)", "long":"\(newCoordinate.longitude)"])
+                places.append(["name":title,"lat":"\(newCoordinate.latitude)","long":"\(newCoordinate.longitude)"])
+                
                
                
                 var annontation = MKPointAnnotation()

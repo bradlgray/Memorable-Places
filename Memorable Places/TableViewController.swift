@@ -56,7 +56,17 @@ class TableViewController: UITableViewController {
         return indexPath
         
     }
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "newPlace" {
+            activePlace = -1
+        }
+    }
     
+    override func viewWillAppear(animated: Bool) {
+        
+        tableView.reloadData()
+        
+    }
     
     /*
     // Override to support conditional editing of the table view.

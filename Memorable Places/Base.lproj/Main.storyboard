@@ -32,7 +32,7 @@
                     <navigationItem key="navigationItem" id="pev-HF-fWE">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="neR-xV-Z7d">
                             <connections>
-                                <segue destination="BYZ-38-t0r" kind="show" id="gT9-oi-oZS"/>
+                                <segue destination="BYZ-38-t0r" kind="show" identifier="newPlace" id="gT9-oi-oZS"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
