@@ -21,96 +21,112 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
         manager = CLLocationManager()
         manager.delegate = self
-        manager.desiredAccuracy - kCLLocationAccuracyBest
+        manager.desiredAccuracy = kCLLocationAccuracyBest
         
         if activePlace == -1 {
             
-       
+           
         manager.requestWhenInUseAuthorization()
         manager.startUpdatingLocation()
+         
         } else {
             let latitude = NSString(string: places[activePlace]["lat"]!).doubleValue
             let longitude = NSString(string: places[activePlace]["long"]!).doubleValue
-            var coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-            var latDelta: CLLocationDegrees = 0.01
-            var lonDelta: CLLocationDegrees = 0.01
-            var span: MKCoordinateSpan = MKCoordinateSpanMake(latDelta, lonDelta)
-            var region: MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
+            let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+            let latDelta: CLLocationDegrees = 0.01
+            let lonDelta: CLLocationDegrees = 0.01
+            let span: MKCoordinateSpan = MKCoordinateSpanMake(latDelta, lonDelta)
+            let region: MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
             self.MapViewKit.setRegion(region, animated: true)
-            var annontation = MKPointAnnotation()
+            let annontation = MKPointAnnotation()
             annontation.coordinate = coordinate
             annontation.title = places[activePlace]["name"]
             self.MapViewKit.addAnnotation(annontation)
 
         }
         
-        var uilpgr = UILongPressGestureRecognizer(target: self, action: "action:")
+        let uilpgr = UILongPressGestureRecognizer(target: self, action: "action:")
         uilpgr.minimumPressDuration = 1.0
         MapViewKit.addGestureRecognizer(uilpgr)
-        
-        
+    
+    
     }
+    
     func action(gestureRecognizer: UIGestureRecognizer) {
         if gestureRecognizer.state == UIGestureRecognizerState.Began {
-            var touchPoint = gestureRecognizer.locationInView(self.MapViewKit)
+           
+            let touchpoint = gestureRecognizer.locationInView(self.MapViewKit)
+           
+            let newCoordinate = self.MapViewKit.convertPoint(touchpoint, toCoordinateFromView: self.MapViewKit)
             
-            var newCoordinate = self.MapViewKit.convertPoint(touchPoint, toCoordinateFromView: self.MapViewKit)
-            var location = CLLocation(latitude: newCoordinate.latitude, longitude: newCoordinate.longitude)
+             let location = CLLocation(latitude: newCoordinate.latitude, longitude: newCoordinate.longitude)
             
             CLGeocoder().reverseGeocodeLocation(location, completionHandler: { (placemarks, error) -> Void in
-               var title = ""
+                var title = ""
                 
                 if error == nil {
-                    if let p = CLPlacemark(placemark: placemarks?[0] as! CLPlacemark) {
+                    if let p = CLPlacemark? (placemarks![0]) {
+                       
                         var subThoroughfare: String = ""
+                       
                         var thoroughfare: String = ""
-                        
+                            
                         if p.subThoroughfare != nil {
-                            subThoroughfare = p.subThoroughfare
+                            subThoroughfare = p.subThoroughfare!
                         }
+                        
                         if p.thoroughfare != nil {
-                            thoroughfare = p.thoroughfare
+                            thoroughfare = p.thoroughfare!
+
                         }
                         title = "\(subThoroughfare) \(thoroughfare)"
                     }
-                    
+                }
+                if self.title == "" {
+                    self.title = "Added \(NSDate())"
                 }
                 
-                if title == "" {
-                    title = "Added \(NSDate())"
-                }
-                places.append(["name":title,"lat":"\(newCoordinate.latitude)","long":"\(newCoordinate.longitude)"])
+                places.append(["name":title, "lat": "\(newCoordinate.latitude)", "long": "\(newCoordinate.latitude)"])
                 
-               
-               
-                var annontation = MKPointAnnotation()
-                annontation.coordinate = newCoordinate
-                annontation.title = title
-                self.MapViewKit.addAnnotation(annontation)
+                var annotation = MKPointAnnotation()
                 
+                annotation.coordinate = newCoordinate
+                
+                annotation.title = title
+                
+                self.MapViewKit.addAnnotation(annotation)
                 
             })
-           
-            
         }
     }
     
     
     
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
-        var userLocations: CLLocation = (locations[0] as! CLLocation)
-        var latitude = userLocations.coordinate.latitude
-        var longitude = userLocations.coordinate.longitude
-        var coordinate = CLLocationCoordinate2DMake(latitude, longitude)
-        var latDelta: CLLocationDegrees = 0.01
-        var lonDelta: CLLocationDegrees = 0.01
-        var span: MKCoordinateSpan = MKCoordinateSpanMake(latDelta, lonDelta)
-        var region: MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
+    
+    
+    
+    
+    
+            
+           
+                
+        
+    
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let userLocations: CLLocation = (locations[0] )
+        let latitude = userLocations.coordinate.latitude
+        let longitude = userLocations.coordinate.longitude
+        let coordinate = CLLocationCoordinate2DMake(latitude, longitude)
+        let latDelta: CLLocationDegrees = 0.01
+        let lonDelta: CLLocationDegrees = 0.01
+        let span: MKCoordinateSpan = MKCoordinateSpanMake(latDelta, lonDelta)
+        let region: MKCoordinateRegion = MKCoordinateRegionMake(coordinate, span)
         self.MapViewKit.setRegion(region, animated: true)
     }
     
     
-    
+                
         
         
 
@@ -122,5 +138,5 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
 
 
-}
+                }
 
